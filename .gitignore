@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+.DS_Store
+
+outputs/figures/*
+outputs/tables/*
+outputs/logs/*
+
+!outputs/figures/README.md
+!outputs/tables/README.md
+!outputs/logs/README.md
