@@ -1,0 +1,18 @@
+frequency: monthly
+start_date: null
+end_date: null
+
+macro_variables: []
+
+asset_proxies:
+  equity: null
+  bond: null
+  gold: null
+
+states: null
+rebalancing_frequency: monthly
+transaction_cost_bps: null
+
+benchmarks:
+  - sixty_forty
+  - equal_weight
