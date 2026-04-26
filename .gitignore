@@ -1,8 +1,13 @@
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
-.env
 .DS_Store
+
+# virtual / conda environment
+.env
+.venv
+venv/
+env/
 
 outputs/figures/*
 outputs/tables/*
