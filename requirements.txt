@@ -6,3 +6,8 @@ statsmodels
 scikit-learn
 pyyaml
 jupyter
+hmmlearn
+cvxpy
+fredapi
+yfinance
+openpyxl
