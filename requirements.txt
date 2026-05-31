@@ -2,12 +2,15 @@ pandas
 numpy
 scipy
 matplotlib
+seaborn
 statsmodels
 scikit-learn
-pyyaml
-jupyter
 hmmlearn
 cvxpy
 fredapi
 yfinance
 openpyxl
+pyyaml
+jupyter
+notebook
+pytest

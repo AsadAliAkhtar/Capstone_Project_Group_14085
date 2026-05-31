@@ -374,3 +374,96 @@ class MeanVariancePortfolio:
                 row[name] = w
             rows[label] = row
         return pd.DataFrame(rows).T
+
+
+def bayes_stein_shrink_mean(mu, sigma, n_obs):
+    """
+    Bayes-Stein shrinkage of sample means toward the GMV-implied flat forecast.
+
+    Parameters
+    ----------
+    mu : array-like
+        Sample mean return vector.
+    sigma : array-like
+        Covariance matrix.
+    n_obs : int
+        Number of observations used to estimate the mean.
+
+    Returns
+    -------
+    shrunk_mu : np.ndarray
+        Bayes-Stein shrunk mean vector.
+    shrinkage : float
+        Shrinkage intensity between 0 and 1.
+    target_mean : float
+        GMV-implied flat forecast target.
+    """
+    mu = np.asarray(mu, dtype=float)
+    sigma = np.asarray(sigma, dtype=float)
+
+    n_assets = len(mu)
+    ones = np.ones(n_assets)
+    inv_sigma = np.linalg.pinv(sigma)
+
+    target_mean = float((ones @ inv_sigma @ mu) / (ones @ inv_sigma @ ones))
+
+    distance = float(
+        (mu - target_mean * ones).T
+        @ inv_sigma
+        @ (mu - target_mean * ones)
+    )
+
+    if distance <= 0:
+        shrinkage = 1.0
+    else:
+        shrinkage = (n_assets + 2) / ((n_assets + 2) + n_obs * distance)
+
+    shrinkage = float(np.clip(shrinkage, 0.0, 1.0))
+    shrunk_mu = (1.0 - shrinkage) * mu + shrinkage * target_mean * ones
+
+    return shrunk_mu, shrinkage, target_mean
+
+
+def bayes_stein_tangency_portfolio(
+    mu,
+    sigma,
+    n_obs,
+    asset_names,
+    rf=0.0,
+    long_only=True,
+    max_weight=1.0,
+    regime=None,
+):
+    """
+    Compute the Bayes-Stein tangency portfolio for one regime.
+
+    Returns
+    -------
+    result : PortfolioResult
+        Tangency portfolio result based on Bayes-Stein shrunk means.
+    shrunk_mu : np.ndarray
+        Bayes-Stein shrunk mean vector.
+    shrinkage : float
+        Bayes-Stein shrinkage intensity.
+    target_mean : float
+        GMV-implied flat forecast target.
+    """
+    shrunk_mu, shrinkage, target_mean = bayes_stein_shrink_mean(
+        mu=mu,
+        sigma=sigma,
+        n_obs=n_obs,
+    )
+
+    optimizer = MeanVariancePortfolio(
+        mu=shrunk_mu,
+        Sigma=sigma,
+        asset_names=asset_names,
+        rf=rf,
+        long_only=long_only,
+        max_weight=max_weight,
+        regime=regime,
+    )
+
+    result = optimizer.tangency()
+
+    return result, shrunk_mu, shrinkage, target_mean

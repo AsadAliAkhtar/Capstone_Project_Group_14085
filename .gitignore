@@ -1,16 +1,26 @@
+# Python cache
 __pycache__/
 *.pyc
-.ipynb_checkpoints/
-.DS_Store
+.pytest_cache/
 
-# virtual / conda environment
+# Jupyter cache
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# virtual / conda environments
 .env
-.venv
+.venv/
 venv/
 env/
 
+# Logs
 outputs/logs/*
+!outputs/logs/README.md
 
+# Keep output folder READMEs
 !outputs/figures/README.md
 !outputs/tables/README.md
 !outputs/logs/README.md

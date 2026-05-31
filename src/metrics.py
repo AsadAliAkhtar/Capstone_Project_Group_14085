@@ -25,11 +25,15 @@ def sharpe_ratio(monthly_returns: pd.Series, risk_free_rate: float = 0.0) -> flo
     return excess.mean() / excess.std() * np.sqrt(12)
 
 
-def sortino_ratio(monthly_returns: pd.Series, target_return: float = 0.0) -> float:
-    downside = monthly_returns[monthly_returns < target_return]
+def sortino_ratio(monthly_returns: pd.Series, risk_free_rate: float = 0.0) -> float:
+    monthly_risk_free_rate = risk_free_rate / 12
+    excess = monthly_returns - monthly_risk_free_rate
+    downside = monthly_returns[monthly_returns < 0]
+
     if len(downside) == 0 or downside.std() == 0:
         return np.nan
-    return (monthly_returns.mean() - target_return) / downside.std() * np.sqrt(12)
+
+    return excess.mean() / downside.std() * np.sqrt(12)
 
 
 def max_drawdown(monthly_returns: pd.Series) -> float:
@@ -71,7 +75,7 @@ def summarize_performance(monthly_returns: pd.Series,
         "Annualized Return":             annualized_return(monthly_returns),
         "Annualized Volatility":         annualized_volatility(monthly_returns),
         "Sharpe Ratio":                  sharpe_ratio(monthly_returns, risk_free_rate=risk_free_rate),
-        "Sortino Ratio":                 sortino_ratio(monthly_returns),
+        "Sortino Ratio":                 sortino_ratio(monthly_returns, risk_free_rate=risk_free_rate),
         "Max Drawdown":                  max_drawdown(monthly_returns),
         f"VaR {int(confidence*100)}% (monthly)":  var,
         f"CVaR {int(confidence*100)}% (monthly)": cvar,
