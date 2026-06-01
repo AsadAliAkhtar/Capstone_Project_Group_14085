@@ -36,9 +36,6 @@ Capstone_Project_Group_14085/
 ├── requirements.txt
 ├── .gitignore
 ├── .env.example
-├── config/
-│   ├── base.yaml
-│   └── README.md
 ├── data/
 │   ├── README.md
 │   ├── macro_data.csv
